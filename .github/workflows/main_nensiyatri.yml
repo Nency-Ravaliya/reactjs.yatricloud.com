@@ -21,18 +21,16 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '22.x'
 
-      - name: npm install and build
+      - name: npm install, build, and test
         run: |
           npm install
-          npm run build
+          npm run build --if-present
+          npm run test --if-present
 
-      - name: Prepare artifact for deployment
-        run: |
-          cp web.config dist/
-          cd dist
-          zip -r ../release.zip *
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -62,9 +60,9 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_53329F7FE633407FB8A8A15122B2BBD8 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_666BBC19C9AB44F193F723A22C8CEC19 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B6907564481A483E8A6EA15A8A42C068 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_A3B78769056C4EC9B5F21DCA159B7BF4 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_738C89A8A18745B299E700BF3F0D8233 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A6DB4808EC2A433ABDA8F5E2FBD4AD7F }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -73,3 +71,4 @@ jobs:
           app-name: 'nensiyatri'
           slot-name: 'Production'
           package: .
+          
